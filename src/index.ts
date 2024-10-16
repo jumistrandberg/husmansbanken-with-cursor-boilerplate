@@ -4,6 +4,7 @@ import recipesRouter from "./routes/recipes.js";
 import { corsOptions } from "./config/cors.js";
 
 const app = express();
+// Just testing cors
 
 // Apply CORS middleware
 app.use(cors(corsOptions));
