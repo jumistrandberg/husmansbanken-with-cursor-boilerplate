@@ -1,24 +1,9 @@
 import express from "express";
 import cors from "cors";
 import recipesRouter from "./routes/recipes.js";
+import { corsOptions } from "./config/cors.js";
 
 const app = express();
-
-// CORS configuration
-const allowedOrigins = [
-  "http://localhost:5173",
-  "husmansbanken-frontend-ghhp1dx3d-jumis-projects-6389d075.vercel.app"
-];
-const corsOptions: cors.CorsOptions = {
-  origin: function(origin, callback) {
-    if(!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  },
-  credentials: true,
-}; 
 
 // Apply CORS middleware
 app.use(cors(corsOptions));
@@ -32,9 +17,11 @@ app.get("/", (req, res) => {
   res.send("Welcome to the API");
 });
 
-// Only start the server if we're not in a Vercel environment
-if (process.env.VERCEL !== "1") {
-  const PORT = process.env.PORT || 3000;
+// Use environment variable for PORT
+const PORT = process.env.PORT || 3000;
+
+// Start the server based on the environment
+if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 
