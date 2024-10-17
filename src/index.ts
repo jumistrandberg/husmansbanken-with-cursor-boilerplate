@@ -7,7 +7,7 @@ const app = express();
 // CORS configuration
 const allowedOrigins = [
   "http://localhost:5173",
-  "husmansbanken-frontend-ghhp1dx3d-jumis-projects-6389d075.vercel.app"
+  "https://husmansbanken-frontend.vercel.app"
 ];
 const corsOptions: cors.CorsOptions = {
   origin: function(origin, callback) {
