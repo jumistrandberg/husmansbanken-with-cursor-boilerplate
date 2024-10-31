@@ -40,3 +40,5 @@ npm run dev
 ```bash
 npx prisma studio
 ```
+
+## testing workflow
