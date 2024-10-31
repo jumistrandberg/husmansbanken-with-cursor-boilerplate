@@ -23,7 +23,6 @@ describe('User routes', () => {
       };
 
       (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
-
       const response = await request(app).get('/api/users/1');
 
       expect(response.status).toBe(200);
@@ -32,7 +31,6 @@ describe('User routes', () => {
 
     it('should return 404 when user is not found', async () => {
       (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
-
       const response = await request(app).get('/api/users/999');
 
       expect(response.status).toBe(404);
@@ -40,12 +38,15 @@ describe('User routes', () => {
     });
 
     it('should return 500 when an error occurs', async () => {
-      (prisma.user.findUnique as jest.Mock).mockRejectedValue(new Error('Database error'));
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
+      (prisma.user.findUnique as jest.Mock).mockRejectedValue(new Error('Database error'));
       const response = await request(app).get('/api/users/1');
 
       expect(response.status).toBe(500);
       expect(response.body).toEqual({ error: 'Internal server error' });
+
+      consoleSpy.mockRestore();
     });
   });
 });
