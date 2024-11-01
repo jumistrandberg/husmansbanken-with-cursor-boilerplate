@@ -29,8 +29,8 @@ app.get('/', (req, res) => {
   res.send('Welcome to the API');
 });
 
-// Only start the server if we're not in a Vercel environment
-if (process.env.VERCEL !== '1') {
+// Only start the server if we're not in a Vercel environment and not running tests
+if (process.env.VERCEL !== '1' && process.env.NODE_ENV !== 'test') {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
