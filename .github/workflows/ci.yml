@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, github-actions]
+    branches: [main, github-actions-v2]
   pull_request:
-    branches: [main, github-actions]
+    branches: [main, github-actions-v2]
 
 jobs:
   test:
@@ -25,7 +25,17 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: node-modules-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.node }}-
+
       - name: Install dependencies
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Run ESLint
@@ -53,7 +63,17 @@ jobs:
           node-version: 20
           cache: 'npm'
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: node-modules-cache
+        with:
+          path: node_modules
+          key: ubuntu-latest-node-20-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ubuntu-latest-node-20-
+
       - name: Install dependencies
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Build application
@@ -68,7 +88,7 @@ jobs:
 
   deploy-staging:
     needs: build
-    if: github.ref == 'refs/heads/github-actions'
+    if: github.ref == 'refs/heads/github-actions-v2'
     runs-on: ubuntu-latest
     environment: github-actions
 
